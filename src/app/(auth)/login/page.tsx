@@ -37,16 +37,17 @@ function LoginInner() {
       const result = await signIn('credentials', {
         email: data.email,
         password: data.password,
-        rememberMe: data.rememberMe,
         redirect: false,
+        callbackUrl: redirect,
       });
 
       if (result?.error) {
         setError('Invalid email or password');
-      } else {
-        router.push(redirect);
-        router.refresh();
+        return;
       }
+      // SPA navigation is faster than window.location (no full reload)
+      router.push(result?.url || redirect);
+      router.refresh();
     } catch {
       setError('Something went wrong. Please try again.');
     } finally {

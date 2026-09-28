@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { format, formatDistanceToNow, parseISO } from 'date-fns';
+import prisma from './prisma';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -23,8 +24,6 @@ export function generateTicketId(prefix = 'HD'): string {
 }
 
 export async function generateSequentialTicketId(prefix = 'HD'): Promise<string> {
-  // Lazy import to avoid circular dependency
-  const { default: prisma } = await import('./prisma');
   const year = new Date().getFullYear();
   const key = `ticketCounter-${year}`;
   const seq = await prisma.$transaction(async (tx) => {

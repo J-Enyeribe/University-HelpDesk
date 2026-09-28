@@ -254,7 +254,7 @@ export function TicketDetail({
             <dt className="text-xs font-medium text-text-muted uppercase tracking-wider">Created</dt>
             <dd className="mt-1 flex items-center gap-2">
               <ClockIcon className="h-4 w-4 text-text-muted" />
-              <time dateTime={ticket.createdAt.toISOString()}>
+              <time dateTime={new Date(ticket.createdAt).toISOString()}>
                 {formatDate(ticket.createdAt, 'PPp')}
               </time>
             </dd>
@@ -263,7 +263,7 @@ export function TicketDetail({
             <dt className="text-xs font-medium text-text-muted uppercase tracking-wider">Last Updated</dt>
             <dd className="mt-1 flex items-center gap-2">
               <ArrowPathIcon className="h-4 w-4 text-text-muted" />
-              <time dateTime={ticket.updatedAt.toISOString()}>
+              <time dateTime={new Date(ticket.updatedAt).toISOString()}>
                 {formatRelativeTime(ticket.updatedAt)}
               </time>
             </dd>
@@ -291,7 +291,7 @@ export function TicketDetail({
               <dt className="text-xs font-medium text-text-muted uppercase tracking-wider">Resolved</dt>
               <dd className="mt-1 flex items-center gap-2">
                 <ClockIcon className="h-4 w-4 text-success" />
-                <time dateTime={ticket.resolvedAt.toISOString()}>
+                <time dateTime={new Date(ticket.resolvedAt).toISOString()}>
                   {formatDate(ticket.resolvedAt, 'PPp')}
                 </time>
               </dd>
@@ -302,7 +302,7 @@ export function TicketDetail({
               <dt className="text-xs font-medium text-text-muted uppercase tracking-wider">Closed</dt>
               <dd className="mt-1 flex items-center gap-2">
                 <ClockIcon className="h-4 w-4 text-text-muted" />
-                <time dateTime={ticket.closedAt.toISOString()}>
+                <time dateTime={new Date(ticket.closedAt).toISOString()}>
                   {formatDate(ticket.closedAt, 'PPp')}
                 </time>
               </dd>
@@ -351,7 +351,7 @@ export function TicketDetail({
                     {log.oldStatus && (
                       <span className="text-text-muted text-xs">{getStatusLabel(log.oldStatus)} →</span>
                     )}
-                    <time className="text-xs text-text-muted ml-auto" dateTime={log.timestamp.toISOString()}>
+                    <time className="text-xs text-text-muted ml-auto" dateTime={new Date(log.timestamp).toISOString()}>
                       {formatDate(log.timestamp, 'PPp')}
                     </time>
                   </div>
@@ -386,7 +386,7 @@ export function TicketDetail({
                   {comment.isInternal && (
                     <Badge variant="gray" className="text-xs">Internal</Badge>
                   )}
-                  <time className="text-xs text-text-muted ml-auto" dateTime={comment.createdAt.toISOString()}>
+                  <time className="text-xs text-text-muted ml-auto" dateTime={new Date(comment.createdAt).toISOString()}>
                     {formatRelativeTime(comment.createdAt)}
                   </time>
                 </div>
@@ -433,6 +433,7 @@ export function TicketDetail({
           currentStatus={ticket.status}
           userRole={currentUser.role}
           onSubmit={handleStatusChange}
+          onCancel={() => setShowStatusModal(false)}
           loading={loading}
         />
       </Modal>

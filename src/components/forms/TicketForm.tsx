@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createTicketSchema, type CreateTicketInput } from '@/lib/validations/ticket';
@@ -17,6 +18,7 @@ interface TicketFormProps {
 }
 
 export function TicketForm({ onSubmit, loading, defaultValues }: TicketFormProps) {
+  const router = useRouter();
   const [attachments, setAttachments] = useState<File[]>([]);
 
   const {
@@ -184,10 +186,10 @@ export function TicketForm({ onSubmit, loading, defaultValues }: TicketFormProps
 
       {/* Submit */}
       <div className="flex justify-end gap-3 pt-4 border-t border-border">
-        <Button type="button" variant="ghost" onClick={() => window.history.back()}>
+        <Button type="button" variant="ghost" className="h-11" onClick={() => router.push('/tickets')}>
           Cancel
         </Button>
-        <Button type="submit" size="lg" loading={loading}>
+        <Button type="submit" size="lg" className="h-11" loading={loading}>
           Submit Ticket
         </Button>
       </div>

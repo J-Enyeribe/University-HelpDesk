@@ -13,10 +13,6 @@ export async function GET(request: NextRequest) {
 
     const user = session.user;
 
-    if (!canPerformAction('report:view', { user })) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
-
     const { searchParams } = new URL(request.url);
     const dateFromStr = searchParams.get('dateFrom');
     const dateToStr = searchParams.get('dateTo');
@@ -25,9 +21,15 @@ export async function GET(request: NextRequest) {
 
     dateTo.setHours(23, 59, 59, 999);
 
-    const where = {
+    // Role-aware scoping: students see own, techs see assigned, directors see all
+    const where: Record<string, unknown> = {
       createdAt: { gte: dateFrom, lte: dateTo },
     };
+    if (user.role === 'STUDENT') {
+      where["createdById"] = user.id;
+    } else if (user.role === 'TECHNICIAN') {
+      where["assignedToId"] = user.id;
+    }
 
     const [
       totalTickets,

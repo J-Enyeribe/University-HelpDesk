@@ -57,10 +57,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${poppins.variable} ${lato.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${poppins.variable} ${lato.variable} ${jetbrainsMono.variable}`}>
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="icon" href="/favicon.svg" sizes="any" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.svg" />
         <link rel="manifest" href="/manifest.json" />
       </head>
       <body className="min-h-screen bg-surface text-text antialiased">

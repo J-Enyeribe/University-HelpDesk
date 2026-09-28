@@ -13,6 +13,7 @@ interface StatusTransitionFormProps {
   currentStatus: TicketStatus;
   userRole: 'STUDENT' | 'TECHNICIAN' | 'DIRECTOR';
   onSubmit: (data: StatusTransitionInput) => Promise<void>;
+  onCancel?: () => void;
   loading?: boolean;
 }
 
@@ -48,7 +49,7 @@ const validTransitions: Record<string, Record<string, TicketStatus[]>> = {
   },
 };
 
-export function StatusTransitionForm({ currentStatus, userRole, onSubmit, loading }: StatusTransitionFormProps) {
+export function StatusTransitionForm({ currentStatus, userRole, onSubmit, onCancel, loading }: StatusTransitionFormProps) {
   const transitions = validTransitions[userRole]?.[currentStatus] || [];
   const requiresNote = ['RESOLVED', 'CLOSED', 'REOPENED'];
 
@@ -102,10 +103,10 @@ export function StatusTransitionForm({ currentStatus, userRole, onSubmit, loadin
       )}
 
       <div className="flex justify-end gap-3 pt-2">
-        <Button type="button" variant="ghost" onClick={() => window.history.back()}>
+        <Button type="button" variant="ghost" className="h-11" onClick={() => onCancel?.()}>
           Cancel
         </Button>
-        <Button type="submit" loading={loading}>
+        <Button type="submit" className="h-11" loading={loading}>
           Update Status
         </Button>
       </div>

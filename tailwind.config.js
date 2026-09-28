@@ -10,25 +10,25 @@ module.exports = {
     extend: {
       colors: {
         navy: {
-          DEFAULT: 'oklch(28% 0.15 260 / <alpha-value>)',
+          DEFAULT: 'oklch(var(--color-navy) / <alpha-value>)',
           hover: 'oklch(24% 0.15 260 / <alpha-value>)',
           light: 'oklch(92% 0.03 260 / <alpha-value>)',
         },
         gold: {
-          DEFAULT: 'oklch(68% 0.18 85 / <alpha-value>)',
+          DEFAULT: 'oklch(var(--color-gold) / <alpha-value>)',
           hover: 'oklch(64% 0.18 85 / <alpha-value>)',
           light: 'oklch(95% 0.12 85 / <alpha-value>)',
         },
         surface: {
-          DEFAULT: '#FFFFFF',
-          muted: '#F8F9FA',
+          DEFAULT: 'oklch(var(--color-surface) / <alpha-value>)',
+          muted: 'oklch(var(--color-surface-muted) / <alpha-value>)',
         },
         text: {
-          DEFAULT: 'oklch(25% 0.02 260 / <alpha-value>)',
-          muted: 'oklch(55% 0.02 260 / <alpha-value>)',
+          DEFAULT: 'oklch(var(--color-text) / <alpha-value>)',
+          muted: 'oklch(var(--color-text-muted) / <alpha-value>)',
         },
-        border: 'oklch(88% 0.01 260 / <alpha-value>)',
-        focus: 'oklch(68% 0.18 85 / <alpha-value>)',
+        border: 'oklch(var(--color-border) / <alpha-value>)',
+        focus: 'oklch(var(--color-gold) / <alpha-value>)',
         error: 'oklch(55% 0.22 25 / <alpha-value>)',
         success: 'oklch(55% 0.15 150 / <alpha-value>)',
         warning: 'oklch(70% 0.18 85 / <alpha-value>)',

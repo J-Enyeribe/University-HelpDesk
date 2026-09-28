@@ -78,7 +78,7 @@ export function TicketCard({ ticket, onClick, showAssignee = true, compact = fal
         </div>
 
         <div className="flex flex-col items-end gap-1 text-right">
-          <time className="text-xs text-text-muted" dateTime={ticket.createdAt.toISOString()}>
+          <time className="text-xs text-text-muted" dateTime={new Date(ticket.createdAt).toISOString()}>
             {formatRelativeTime(ticket.createdAt)}
           </time>
           {showAssignee && ticket.assignedTo && (

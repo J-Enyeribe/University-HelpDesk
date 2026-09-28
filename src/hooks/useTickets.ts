@@ -36,7 +36,7 @@ export function useTickets(filters: TicketFilters = {}) {
 }
 
 export function useTicket(id: string) {
-  const { data, error, isLoading, mutate: mutateTicket } = useSWR<Ticket>(
+  const { data, error, isLoading, mutate: mutateTicket } = useSWR<{ ticket: Ticket }>(
     id ? `/api/tickets/${id}` : null,
     fetcher,
     {
@@ -46,8 +46,8 @@ export function useTicket(id: string) {
   );
 
   return {
-    ticket: data,
-    data,
+    ticket: data?.ticket,
+    data: data?.ticket,
     isLoading,
     isError: error,
     mutate: mutateTicket,

@@ -7,6 +7,23 @@
     --font-poppins: 'Poppins', system-ui, sans-serif;
     --font-lato: 'Lato', system-ui, sans-serif;
     --font-jetbrains-mono: 'JetBrains Mono', monospace;
+    --color-navy: 28% 0.15 260;
+    --color-gold: 68% 0.18 85;
+    --color-surface: 100% 0 0;
+    --color-surface-muted: 97% 0.005 260;
+    --color-text: 25% 0.02 260;
+    --color-text-muted: 55% 0.02 260;
+    --color-border: 88% 0.01 260;
+  }
+
+  .dark {
+    --color-navy: 92% 0.03 260;
+    --color-gold: 70% 0.15 85;
+    --color-surface: 18% 0.02 260;
+    --color-surface-muted: 22% 0.02 260;
+    --color-text: 92% 0.01 260;
+    --color-text-muted: 65% 0.02 260;
+    --color-border: 30% 0.02 260;
   }
 
   * {
@@ -24,7 +41,7 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display font-semibold text-navy;
+    @apply font-display font-semibold text-navy dark:text-white;
     font-family: var(--font-poppins);
   }
 
@@ -34,7 +51,7 @@
   }
 
   ::selection {
-    @apply bg-gold/30 text-navy;
+    @apply bg-gold text-navy;
   }
 
   :focus-visible {
