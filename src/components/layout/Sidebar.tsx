@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 import { cn } from '@/lib/utils';
 import { SessionUser } from '@/types/user';
 import {
@@ -160,8 +161,8 @@ export function Sidebar({ user, onClose, open }: { user?: SessionUser | null; on
         {!collapsed && (
           <div className="mt-3 pt-3 border-t border-border">
             <button
-              onClick={() => onClose?.()}
-              className="flex items-center gap-2 w-full px-3 py-2 text-sm font-medium text-text-muted hover:text-error hover:bg-error/5 rounded-lg transition-colors"
+              onClick={() => signOut({ callbackUrl: '/login' })}
+              className="flex items-center gap-2 w-full px-3 py-2 text-sm font-medium text-text-muted hover:text-error hover:bg-error/5 rounded-lg transition-colors h-11"
             >
               <ArrowRightOnRectangleIcon className="h-5 w-5" />
               <span>Sign Out</span>

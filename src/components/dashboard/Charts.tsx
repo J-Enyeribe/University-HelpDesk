@@ -1,6 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
+import { useTheme } from 'next-themes';
 import {
   BarChart,
   Bar,
@@ -25,18 +26,33 @@ const ResponsiveContainerWrapper = ResponsiveContainer as unknown as React.Compo
 
 const COLORS = ['#192C57', '#CBAE2D', '#0693e3', '#00d084', '#ff6900', '#cf2e2e'];
 
+function useChartTheme() {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === 'dark';
+  return {
+    isDark,
+    grid: isDark ? '#334155' : '#e2e4e9',
+    tick: isDark ? '#94a3b8' : '#6b7280',
+    tooltipBg: isDark ? '#1e293b' : '#ffffff',
+    tooltipBorder: isDark ? '#334155' : '#e2e4e9',
+    tooltipText: isDark ? '#f1f5f9' : '#1a1a2e',
+    navy: isDark ? '#CBAE2D' : '#192C57',
+  };
+}
+
 interface ChartProps {
   data: Array<Record<string, unknown>>;
   loading?: boolean;
 }
 
 export function TicketsByCategoryChart({ data, loading }: ChartProps) {
+  const { grid, tick, tooltipBg, tooltipBorder, navy } = useChartTheme();
   if (loading || !data.length) {
     return (
       <div className="card p-6">
-        <h3 className="font-semibold text-navy mb-4">Tickets by Category</h3>
+        <h3 className="font-semibold text-navy dark:text-white mb-4">Tickets by Category</h3>
         <div className="h-64 flex items-center justify-center">
-          <div className="animate-pulse bg-border rounded-xl w-full" />
+          <div className="animate-pulse bg-border rounded-xl w-full h-full" />
         </div>
       </div>
     );
@@ -44,18 +60,18 @@ export function TicketsByCategoryChart({ data, loading }: ChartProps) {
 
   return (
     <div className="card p-6">
-      <h3 className="font-semibold text-navy mb-4">Tickets by Category</h3>
+      <h3 className="font-semibold text-navy dark:text-white mb-4">Tickets by Category</h3>
       <div className="h-64">
-<ResponsiveContainerWrapper width="100%" height="100%">
+        <ResponsiveContainerWrapper width="100%" height="100%">
             <BarChartWrapper data={data} layout="vertical">
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e4e9" />
-              <XAxis type="number" tick={{ fontSize: 12, fill: '#6b7280' }} />
-              <YAxis type="category" dataKey="category" tick={{ fontSize: 12, fill: '#6b7280' }} width={120} />
+              <CartesianGrid strokeDasharray="3 3" stroke={grid} />
+              <XAxis type="number" tick={{ fontSize: 12, fill: tick }} />
+              <YAxis type="category" dataKey="category" tick={{ fontSize: 12, fill: tick }} width={120} />
               <Tooltip
-                contentStyle={{ backgroundColor: '#fff', border: '1px solid #e2e4e9', borderRadius: '8px' }}
+                contentStyle={{ backgroundColor: tooltipBg, border: `1px solid ${tooltipBorder}`, borderRadius: '8px', color: tick }}
                 formatter={(value: number) => [value, 'Tickets']}
               />
-              <Bar dataKey="count" fill="#192C57" radius={[0, 4, 4, 0]} maxBarSize={40} />
+              <Bar dataKey="count" fill={navy} radius={[0, 4, 4, 0]} maxBarSize={40} />
             </BarChartWrapper>
           </ResponsiveContainerWrapper>
       </div>
@@ -64,12 +80,13 @@ export function TicketsByCategoryChart({ data, loading }: ChartProps) {
 }
 
 export function TicketsByPriorityChart({ data, loading }: ChartProps) {
+  const { tick, tooltipBg, tooltipBorder } = useChartTheme();
   if (loading || !data.length) {
     return (
       <div className="card p-6">
-        <h3 className="font-semibold text-navy mb-4">Tickets by Priority</h3>
+        <h3 className="font-semibold text-navy dark:text-white mb-4">Tickets by Priority</h3>
         <div className="h-64 flex items-center justify-center">
-          <div className="animate-pulse bg-border rounded-xl w-full" />
+          <div className="animate-pulse bg-border rounded-xl w-full h-full" />
         </div>
       </div>
     );
@@ -80,9 +97,9 @@ export function TicketsByPriorityChart({ data, loading }: ChartProps) {
 
   return (
     <div className="card p-6">
-      <h3 className="font-semibold text-navy mb-4">Tickets by Priority</h3>
+      <h3 className="font-semibold text-navy dark:text-white mb-4">Tickets by Priority</h3>
       <div className="h-64">
-<ResponsiveContainerWrapper width="100%" height="100%">
+        <ResponsiveContainerWrapper width="100%" height="100%">
             <PieChartWrapper>
               <Pie
                 data={sortedData}
@@ -101,7 +118,7 @@ export function TicketsByPriorityChart({ data, loading }: ChartProps) {
                 ))}
               </Pie>
               <Tooltip
-                contentStyle={{ backgroundColor: '#fff', border: '1px solid #e2e4e9', borderRadius: '8px' }}
+                contentStyle={{ backgroundColor: tooltipBg, border: `1px solid ${tooltipBorder}`, borderRadius: '8px', color: tick }}
                 formatter={(value: number) => [value, 'Tickets']}
               />
             </PieChartWrapper>
@@ -112,12 +129,13 @@ export function TicketsByPriorityChart({ data, loading }: ChartProps) {
 }
 
 export function TicketsOverTimeChart({ data, loading }: ChartProps) {
+  const { grid, tick, tooltipBg, tooltipBorder, navy } = useChartTheme();
   if (loading || !data.length) {
     return (
       <div className="card p-6">
-        <h3 className="font-semibold text-navy mb-4">Tickets Over Time</h3>
+        <h3 className="font-semibold text-navy dark:text-white mb-4">Tickets Over Time</h3>
         <div className="h-64 flex items-center justify-center">
-          <div className="animate-pulse bg-border rounded-xl w-full" />
+          <div className="animate-pulse bg-border rounded-xl w-full h-full" />
         </div>
       </div>
     );
@@ -125,23 +143,23 @@ export function TicketsOverTimeChart({ data, loading }: ChartProps) {
 
   return (
     <div className="card p-6">
-      <h3 className="font-semibold text-navy mb-4">Tickets Over Time</h3>
+      <h3 className="font-semibold text-navy dark:text-white mb-4">Tickets Over Time</h3>
       <div className="h-64">
-<ResponsiveContainerWrapper width="100%" height="100%">
+        <ResponsiveContainerWrapper width="100%" height="100%">
             <LineChartWrapper data={data}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e4e9" />
-              <XAxis dataKey="date" tick={{ fontSize: 12, fill: '#6b7280' }} />
-              <YAxis tick={{ fontSize: 12, fill: '#6b7280' }} />
+              <CartesianGrid strokeDasharray="3 3" stroke={grid} />
+              <XAxis dataKey="date" tick={{ fontSize: 12, fill: tick }} />
+              <YAxis tick={{ fontSize: 12, fill: tick }} />
               <Tooltip
-                contentStyle={{ backgroundColor: '#fff', border: '1px solid #e2e4e9', borderRadius: '8px' }}
+                contentStyle={{ backgroundColor: tooltipBg, border: `1px solid ${tooltipBorder}`, borderRadius: '8px', color: tick }}
                 formatter={(value: number) => [value, 'Tickets']}
               />
               <Line
                 type="monotone"
                 dataKey="count"
-                stroke="#192C57"
+                stroke={navy}
                 strokeWidth={2}
-                dot={{ fill: '#192C57', strokeWidth: 2, r: 4 }}
+                dot={{ fill: navy, strokeWidth: 2, r: 4 }}
                 activeDot={{ r: 6 }}
               />
             </LineChartWrapper>
@@ -152,12 +170,13 @@ export function TicketsOverTimeChart({ data, loading }: ChartProps) {
 }
 
 export function TechnicianPerformanceChart({ data, loading }: ChartProps) {
+  const { grid, tick, tooltipBg, tooltipBorder } = useChartTheme();
   if (loading || !data.length) {
     return (
       <div className="card p-6">
-        <h3 className="font-semibold text-navy mb-4">Technician Performance</h3>
+        <h3 className="font-semibold text-navy dark:text-white mb-4">Technician Performance</h3>
         <div className="h-64 flex items-center justify-center">
-          <div className="animate-pulse bg-border rounded-xl w-full" />
+          <div className="animate-pulse bg-border rounded-xl w-full h-full" />
         </div>
       </div>
     );
@@ -165,15 +184,15 @@ export function TechnicianPerformanceChart({ data, loading }: ChartProps) {
 
   return (
     <div className="card p-6">
-      <h3 className="font-semibold text-navy mb-4">Technician Performance</h3>
+      <h3 className="font-semibold text-navy dark:text-white mb-4">Technician Performance</h3>
       <div className="h-64">
-<ResponsiveContainerWrapper width="100%" height="100%">
+        <ResponsiveContainerWrapper width="100%" height="100%">
             <BarChartWrapper data={data} layout="vertical">
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e4e9" />
-              <XAxis type="number" tick={{ fontSize: 12, fill: '#6b7280' }} />
-              <YAxis type="category" dataKey="name" tick={{ fontSize: 12, fill: '#6b7280' }} width={120} />
+              <CartesianGrid strokeDasharray="3 3" stroke={grid} />
+              <XAxis type="number" tick={{ fontSize: 12, fill: tick }} />
+              <YAxis type="category" dataKey="name" tick={{ fontSize: 12, fill: tick }} width={120} />
               <Tooltip
-                contentStyle={{ backgroundColor: '#fff', border: '1px solid #e2e4e9', borderRadius: '8px' }}
+                contentStyle={{ backgroundColor: tooltipBg, border: `1px solid ${tooltipBorder}`, borderRadius: '8px', color: tick }}
                 formatter={(value: number, name: string) => [value, name === 'assigned' ? 'Assigned' : 'Resolved']}
               />
               <Bar dataKey="assigned" fill="#CBAE2D" radius={[0, 4, 4, 0]} maxBarSize={30} name="Assigned" />
