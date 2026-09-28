@@ -1,0 +1,34 @@
+{
+  "name": "KCA ICT Helpdesk",
+  "short_name": "KCA Helpdesk",
+  "description": "Student IT Helpdesk System for KCA University ICT Directorate",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#192C57",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "productivity"],
+  "shortcuts": [
+    {
+      "name": "New Ticket",
+      "short_name": "New Ticket",
+      "description": "Create a new support ticket",
+      "url": "/tickets/new",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

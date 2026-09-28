@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: kca-helpdesk-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: kca_helpdesk
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kca-helpdesk-app
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/kca_helpdesk?schema=public
+      NEXTAUTH_URL: http://localhost:3000
+      NEXTAUTH_SECRET: your-super-secret-key-min-32-chars-change-in-production
+      SMTP_HOST: smtp.example.com
+      SMTP_PORT: "587"
+      SMTP_USER: your-smtp-user
+      SMTP_PASSWORD: your-smtp-password
+      EMAIL_FROM: KCA ICT Helpdesk <helpdesk@kcau.ac.ke>
+      UPLOAD_DIR: ./public/uploads
+      MAX_FILE_SIZE: "5242880"
+      NEXT_PUBLIC_APP_NAME: KCA ICT Helpdesk
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      AUTO_CLOSE_DAYS: "7"
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./public/uploads:/app/public/uploads
+
+volumes:
+  postgres_data:
