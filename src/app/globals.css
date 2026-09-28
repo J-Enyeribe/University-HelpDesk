@@ -147,7 +147,7 @@
   }
 
   .status-in-progress {
-    @apply status-badge bg-blue/10 text-blue-600 dark:text-blue-400;
+    @apply status-badge bg-sky-500/10 text-blue-600 dark:text-blue-400;
   }
 
   .status-resolved {
@@ -155,11 +155,11 @@
   }
 
   .status-closed {
-    @apply status-badge bg-gray/10 text-gray-600 dark:text-gray-400;
+    @apply status-badge bg-slate-500/10 text-gray-600 dark:text-gray-400;
   }
 
   .status-reopened {
-    @apply status-badge bg-orange/10 text-orange-600 dark:text-orange-400;
+    @apply status-badge bg-orange-500/10 text-orange-600 dark:text-orange-400;
   }
 
   .priority-badge {
@@ -167,15 +167,15 @@
   }
 
   .priority-low {
-    @apply priority-badge bg-gray/10 text-gray-600 dark:text-gray-400;
+    @apply priority-badge bg-slate-500/10 text-gray-600 dark:text-gray-400;
   }
 
   .priority-medium {
-    @apply priority-badge bg-blue/10 text-blue-600 dark:text-blue-400;
+    @apply priority-badge bg-sky-500/10 text-blue-600 dark:text-blue-400;
   }
 
   .priority-high {
-    @apply priority-badge bg-orange/10 text-orange-600 dark:text-orange-400;
+    @apply priority-badge bg-orange-500/10 text-orange-600 dark:text-orange-400;
   }
 
   .priority-critical {

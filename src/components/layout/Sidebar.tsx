@@ -70,17 +70,20 @@ const navItems: NavItem[] = [
   },
 ];
 
-export function Sidebar({ user, onClose }: { user: SessionUser; onClose?: () => void }) {
+export function Sidebar({ user, onClose, open }: { user?: SessionUser | null; onClose?: () => void; open?: boolean }) {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
 
-  const filteredItems = navItems.filter((item) => item.roles.includes(user.role));
+  const filteredItems = user ? navItems.filter((item) => item.roles.includes(user.role)) : [];
 
   return (
     <aside
       className={cn(
         'fixed left-0 top-0 z-40 h-screen bg-surface border-r border-border transition-all duration-300 ease-out-quart flex flex-col',
-        collapsed ? 'w-16' : 'w-64'
+        'w-64',
+        collapsed && 'lg:w-16 lg:w-16',
+        !collapsed && 'lg:w-64',
+        open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       )}
       aria-label="Main navigation"
     >
@@ -115,8 +118,9 @@ export function Sidebar({ user, onClose }: { user: SessionUser; onClose?: () => 
             <Link
               key={item.href}
               href={item.href}
+              onClick={() => onClose?.()}
               className={cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-fast',
+                'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-fast h-11',
                 'hover:bg-surface-muted hover:text-navy',
                 isActive ? 'bg-navy/10 text-navy' : 'text-text-muted',
                 collapsed && 'justify-center'
@@ -144,12 +148,12 @@ export function Sidebar({ user, onClose }: { user: SessionUser; onClose?: () => 
       <div className={cn('p-3 border-t border-border', collapsed && 'justify-center')}>
         <div className="flex items-center gap-3">
           <div className="h-8 w-8 rounded-full bg-navy/10 flex items-center justify-center text-navy font-medium">
-            {user.name.charAt(0).toUpperCase()}
+            {(user?.name ?? '?').charAt(0).toUpperCase()}
           </div>
           {!collapsed && (
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-text truncate">{user.name}</p>
-              <p className="text-xs text-text-muted truncate capitalize">{user.role.toLowerCase()}</p>
+              <p className="text-sm font-medium text-text truncate">{user?.name ?? 'Guest'}</p>
+              <p className="text-xs text-text-muted truncate capitalize">{(user?.role ?? 'guest').toLowerCase()}</p>
             </div>
           )}
         </div>

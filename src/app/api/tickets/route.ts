@@ -48,6 +48,11 @@ export async function GET(request: NextRequest) {
     if (filters.assignedToId) {
       where['assignedToId'] = filters.assignedToId;
     }
+    // Support unassigned pool for technicians (tickets with no assignee)
+    const unassigned = searchParams.get('unassigned');
+    if (unassigned === 'true') {
+      where['assignedToId'] = null;
+    }
     if (filters.createdById && user.role === 'DIRECTOR') {
       where['createdById'] = filters.createdById;
     }

@@ -10,6 +10,8 @@ import { Modal } from '@/components/ui/Modal';
 import { CommentForm } from '@/components/forms/CommentForm';
 import { StatusTransitionForm } from '@/components/forms/StatusTransitionForm';
 import { Dropdown, DropdownItem, DropdownDivider } from '@/components/ui/Dropdown';
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
+import { ShortcutsHelp } from '@/components/ui/ShortcutsHelp';
 import {
   ArrowDownTrayIcon,
   ArrowPathIcon,
@@ -54,6 +56,28 @@ export function TicketDetail({
   const [showAssignModal, setShowAssignModal] = useState(false);
   const [technicians, setTechnicians] = useState<User[]>([]);
   const [techLoading, setTechLoading] = useState(false);
+  const { showHelp, setShowHelp } = useKeyboardShortcuts(
+    [
+      {
+        key: 's',
+        description: 'Focus status',
+        action: () => setShowStatusModal(true),
+      },
+      {
+        key: 'c',
+        description: 'Focus comment',
+        action: () => {
+          const el = document.getElementById('comment-box') as HTMLTextAreaElement | null;
+          if (el) el.focus();
+          else {
+            const fallback = document.querySelector('textarea[placeholder*="comment" i]') as HTMLTextAreaElement | null;
+            fallback?.focus();
+          }
+        },
+      },
+    ],
+    true
+  );
 
   const getBadgeVariant = (status: TicketStatus): 'navy' | 'gold' | 'green' | 'gray' | 'orange' | 'default' => {
     switch (status) {
@@ -154,6 +178,9 @@ export function TicketDetail({
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" onClick={() => onGeneratePDF(ticket.id)} icon={<ArrowDownTrayIcon className="h-4 w-4" />}>
             PDF
+          </Button>
+          <Button variant="ghost" size="sm" className="h-11 w-11 px-0" onClick={() => setShowHelp(true)} aria-label="Keyboard shortcuts">
+            ?
           </Button>
           <Dropdown
             trigger={
@@ -373,12 +400,24 @@ export function TicketDetail({
         </div>
 
         {/* Add Comment Form */}
-        <CommentForm
-          onSubmit={async (data) => {
-            await onAddComment(ticket.id, data.message, data.isInternal);
-          }}
-          loading={loading}
-          placeholder="Add a comment or update..."
+        <div id="comment-box-wrapper">
+          <CommentForm
+            onSubmit={async (data) => {
+              await onAddComment(ticket.id, data.message, data.isInternal);
+            }}
+            loading={loading}
+            placeholder="Add a comment or update... (press c to focus)"
+          />
+        </div>
+        <ShortcutsHelp
+          isOpen={showHelp}
+          onClose={() => setShowHelp(false)}
+          shortcuts={[
+            { key: 's', description: 'Open status modal' },
+            { key: 'c', description: 'Focus comment box' },
+            { key: '?', description: 'Toggle this help' },
+            { key: 'Esc', description: 'Close modal' },
+          ]}
         />
       </div>
 
@@ -461,12 +500,27 @@ export function TicketDetail({
         size="sm"
       >
         <div className="flex justify-end gap-3">
-          <Button variant="secondary" onClick={() => setShowReassignModal(false)}>Cancel</Button>
-          <Button variant="danger" onClick={() => { handleAssign(null); setShowReassignModal(false); }}>
+          <Button variant="secondary" className="h-11" onClick={() => setShowReassignModal(false)}>Cancel</Button>
+          <Button variant="danger" className="h-11" onClick={() => { handleAssign(null); setShowReassignModal(false); }}>
             Return to Pool
           </Button>
         </div>
       </Modal>
+
+      {/* Mobile sticky action bar */}
+      <div className="lg:hidden sticky bottom-0 -mx-4 sm:-mx-6 px-4 py-3 bg-surface/90 backdrop-blur-md border-t border-border flex items-center justify-between gap-2 z-20 -mb-6 mt-6">
+        <Button variant="secondary" size="sm" className="flex-1 h-11" onClick={() => setShowStatusModal(true)} disabled={!canTransition()}>
+          Change Status
+        </Button>
+        {currentUser.role === 'DIRECTOR' ? (
+          <Button variant="secondary" size="sm" className="flex-1 h-11" onClick={() => setShowAssignModal(true)}>Assign</Button>
+        ) : currentUser.role === 'TECHNICIAN' && ticket.assignedToId === currentUser.id ? (
+          <Button variant="ghost" size="sm" className="flex-1 h-11" onClick={() => setShowReassignModal(true)}>Return to Pool</Button>
+        ) : null}
+        <Button variant="ghost" size="sm" className="h-11 px-3" onClick={() => onGeneratePDF(ticket.id)} aria-label="Download PDF">
+          <ArrowDownTrayIcon className="h-5 w-5" />
+        </Button>
+      </div>
     </div>
   );
 }

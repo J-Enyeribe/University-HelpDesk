@@ -11,7 +11,7 @@ import { Avatar } from '@/components/ui/Avatar';
 import { Button } from '@/components/ui/Button';
 import { useTheme } from 'next-themes';
 
-export function Header({ user, onMenuClick }: { user: SessionUser; onMenuClick?: () => void }) {
+export function Header({ user, onMenuClick }: { user?: SessionUser | null; onMenuClick?: () => void }) {
   const { data: session } = useSession();
   const { theme, setTheme } = useTheme();
   const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -131,8 +131,8 @@ export function Header({ user, onMenuClick }: { user: SessionUser; onMenuClick?:
               aria-label="User menu"
               aria-expanded={userMenuOpen}
             >
-              <Avatar src={user.avatarUrl} name={user.name} size="sm" />
-              <span className="hidden sm:block text-sm font-medium text-text">{user.name}</span>
+              <Avatar src={user?.avatarUrl} name={user?.name ?? 'Guest'} size="sm" />
+              <span className="hidden sm:block text-sm font-medium text-text">{user?.name ?? 'Guest'}</span>
             </button>
 
             {userMenuOpen && (

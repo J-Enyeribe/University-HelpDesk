@@ -34,6 +34,7 @@ export function CommentForm({ onSubmit, loading, placeholder = 'Add a comment...
   return (
     <form onSubmit={onFormSubmit} className="space-y-3">
       <Textarea
+        id="comment-box"
         placeholder={placeholder}
         error={errors.message?.message}
         {...register('message')}

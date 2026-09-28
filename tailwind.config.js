@@ -10,28 +10,28 @@ module.exports = {
     extend: {
       colors: {
         navy: {
-          DEFAULT: 'oklch(28% 0.15 260)',
-          hover: 'oklch(24% 0.15 260)',
-          light: 'oklch(92% 0.03 260)',
+          DEFAULT: 'oklch(28% 0.15 260 / <alpha-value>)',
+          hover: 'oklch(24% 0.15 260 / <alpha-value>)',
+          light: 'oklch(92% 0.03 260 / <alpha-value>)',
         },
         gold: {
-          DEFAULT: 'oklch(68% 0.18 85)',
-          hover: 'oklch(64% 0.18 85)',
-          light: 'oklch(95% 0.12 85)',
+          DEFAULT: 'oklch(68% 0.18 85 / <alpha-value>)',
+          hover: 'oklch(64% 0.18 85 / <alpha-value>)',
+          light: 'oklch(95% 0.12 85 / <alpha-value>)',
         },
         surface: {
           DEFAULT: '#FFFFFF',
           muted: '#F8F9FA',
         },
         text: {
-          DEFAULT: 'oklch(25% 0.02 260)',
-          muted: 'oklch(55% 0.02 260)',
+          DEFAULT: 'oklch(25% 0.02 260 / <alpha-value>)',
+          muted: 'oklch(55% 0.02 260 / <alpha-value>)',
         },
-        border: 'oklch(88% 0.01 260)',
-        focus: 'oklch(68% 0.18 85)',
-        error: 'oklch(55% 0.22 25)',
-        success: 'oklch(55% 0.15 150)',
-        warning: 'oklch(70% 0.18 85)',
+        border: 'oklch(88% 0.01 260 / <alpha-value>)',
+        focus: 'oklch(68% 0.18 85 / <alpha-value>)',
+        error: 'oklch(55% 0.22 25 / <alpha-value>)',
+        success: 'oklch(55% 0.15 150 / <alpha-value>)',
+        warning: 'oklch(70% 0.18 85 / <alpha-value>)',
       },
       fontFamily: {
         display: ['var(--font-poppins)', 'system-ui', 'sans-serif'],
