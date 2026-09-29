@@ -45,8 +45,8 @@ export function TechnicianPerformance({ technicians, loading }: TechnicianPerfor
   return (
     <div className="card p-4">
       <h3 className="font-semibold text-navy mb-4">Technician Performance</h3>
-      <div className="overflow-x-auto">
-        <table className="table w-full">
+      <div className="overflow-x-auto -mx-4 px-4">
+        <table className="table w-full min-w-[520px]">
           <thead>
             <tr>
               <th className="px-4 py-3">Technician</th>

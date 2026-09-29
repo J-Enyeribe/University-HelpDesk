@@ -1,6 +1,6 @@
 'use client';
 
-import { cn } from '@/lib/utils';
+import { useMemo } from 'react';
 import { useTheme } from 'next-themes';
 import {
   BarChart,
@@ -16,15 +16,10 @@ import {
   Pie,
   Cell,
 } from 'recharts';
-import type { ReactElement } from 'react';
-
-// Type-safe wrapper for Recharts components to avoid JSX type issues
-const BarChartWrapper = BarChart as unknown as React.ComponentType<any>;
-const LineChartWrapper = LineChart as unknown as React.ComponentType<any>;
-const PieChartWrapper = PieChart as unknown as React.ComponentType<any>;
-const ResponsiveContainerWrapper = ResponsiveContainer as unknown as React.ComponentType<any>;
 
 const COLORS = ['#192C57', '#CBAE2D', '#0693e3', '#00d084', '#ff6900', '#cf2e2e'];
+
+const CHART_HEIGHT = 256;
 
 function useChartTheme() {
   const { resolvedTheme } = useTheme();
@@ -35,9 +30,30 @@ function useChartTheme() {
     tick: isDark ? '#94a3b8' : '#6b7280',
     tooltipBg: isDark ? '#1e293b' : '#ffffff',
     tooltipBorder: isDark ? '#334155' : '#e2e4e9',
-    tooltipText: isDark ? '#f1f5f9' : '#1a1a2e',
     navy: isDark ? '#CBAE2D' : '#192C57',
   };
+}
+
+function useReducedMotion(): boolean {
+  return useMemo(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false;
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }, []);
+}
+
+interface CategoryDatum {
+  category: string;
+  count: number;
+}
+
+interface PriorityDatum {
+  priority: string;
+  count: number;
+}
+
+interface OverTimeDatum {
+  date: string;
+  count: number;
 }
 
 interface ChartProps {
@@ -45,206 +61,174 @@ interface ChartProps {
   loading?: boolean;
 }
 
-export function TicketsByCategoryChart({ data, loading }: ChartProps) {
-  const { grid, tick, tooltipBg, tooltipBorder, navy } = useChartTheme();
-  if (loading) {
-    return (
-      <div className="card p-6">
-        <h3 className="font-semibold text-navy dark:text-white mb-4">Tickets by Category</h3>
-        <div className="h-64 flex items-center justify-center">
-          <div className="animate-pulse bg-border rounded-xl w-full h-full" />
-        </div>
-      </div>
-    );
-  }
+function toCount(value: unknown): number {
+  return typeof value === 'number' && Number.isFinite(value) ? value : 0;
+}
 
-  if (!data.length) {
-    return (
-      <div className="card p-6">
-        <h3 className="font-semibold text-navy dark:text-white mb-4">Tickets by Category</h3>
-        <div className="h-64 flex items-center justify-center">
-          <p className="text-sm text-text-muted">No data for this period. Try clearing the date filter.</p>
-        </div>
-      </div>
-    );
-  }
+function toLabel(value: unknown): string {
+  return typeof value === 'string' ? value.replace(/_/g, ' ') : String(value ?? '');
+}
 
+function ChartShell({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="card p-6">
-      <h3 className="font-semibold text-navy dark:text-white mb-4">Tickets by Category</h3>
-      <div className="h-64">
-        <ResponsiveContainerWrapper width="100%" height="100%">
-            <BarChartWrapper data={data} layout="vertical">
-              <CartesianGrid strokeDasharray="3 3" stroke={grid} />
-              <XAxis type="number" tick={{ fontSize: 12, fill: tick }} />
-              <YAxis type="category" dataKey="category" tick={{ fontSize: 12, fill: tick }} width={120} />
-              <Tooltip
-                contentStyle={{ backgroundColor: tooltipBg, border: `1px solid ${tooltipBorder}`, borderRadius: '8px', color: tick }}
-                formatter={(value: number) => [value, 'Tickets']}
-              />
-              <Bar dataKey="count" fill={navy} radius={[0, 4, 4, 0]} maxBarSize={40} />
-            </BarChartWrapper>
-          </ResponsiveContainerWrapper>
-      </div>
+      <h3 className="font-semibold text-navy dark:text-white mb-4">{title}</h3>
+      {children}
     </div>
+  );
+}
+
+function ChartLoading({ title }: { title: string }) {
+  return (
+    <ChartShell title={title}>
+      <div className="h-64 flex items-center justify-center" role="status" aria-label={`Loading ${title}`}>
+        <div className="animate-pulse bg-border rounded-xl w-full h-full" />
+      </div>
+    </ChartShell>
+  );
+}
+
+function ChartEmpty({ title }: { title: string }) {
+  return (
+    <ChartShell title={title}>
+      <div className="h-64 flex items-center justify-center">
+        <p className="text-sm text-text-muted">No data for this period. Try clearing the date filter.</p>
+      </div>
+    </ChartShell>
+  );
+}
+
+const tooltipStyle = (bg: string, border: string, tick: string): React.CSSProperties => ({
+  backgroundColor: bg,
+  border: `1px solid ${border}`,
+  borderRadius: '8px',
+  color: tick,
+});
+
+export function TicketsByCategoryChart({ data, loading }: ChartProps) {
+  const { grid, tick, tooltipBg, tooltipBorder, navy } = useChartTheme();
+  const reduceMotion = useReducedMotion();
+
+  const rows: CategoryDatum[] = useMemo(
+    () =>
+      data.map((d) => ({
+        category: toLabel(d['category']),
+        count: toCount(d['count']),
+      })),
+    [data]
+  );
+
+  if (loading) return <ChartLoading title="Tickets by Category" />;
+  if (!rows.length) return <ChartEmpty title="Tickets by Category" />;
+
+  return (
+    <ChartShell title="Tickets by Category">
+      <div className="h-64">
+        <ResponsiveContainer width="100%" height={CHART_HEIGHT}>
+          <BarChart data={rows} layout="vertical">
+            <CartesianGrid strokeDasharray="3 3" stroke={grid} />
+            <XAxis type="number" tick={{ fontSize: 12, fill: tick }} allowDecimals={false} />
+            <YAxis type="category" dataKey="category" tick={{ fontSize: 12, fill: tick }} width={120} />
+            <Tooltip
+              contentStyle={tooltipStyle(tooltipBg, tooltipBorder, tick)}
+              formatter={(value) => [toCount(value), 'Tickets']}
+            />
+            <Bar dataKey="count" fill={navy} radius={[0, 4, 4, 0]} maxBarSize={40} isAnimationActive={!reduceMotion} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    </ChartShell>
   );
 }
 
 export function TicketsByPriorityChart({ data, loading }: ChartProps) {
   const { tick, tooltipBg, tooltipBorder } = useChartTheme();
-  if (loading) {
-    return (
-      <div className="card p-6">
-        <h3 className="font-semibold text-navy dark:text-white mb-4">Tickets by Priority</h3>
-        <div className="h-64 flex items-center justify-center">
-          <div className="animate-pulse bg-border rounded-xl w-full h-full" />
-        </div>
-      </div>
-    );
-  }
+  const reduceMotion = useReducedMotion();
 
-  if (!data.length) {
-    return (
-      <div className="card p-6">
-        <h3 className="font-semibold text-navy dark:text-white mb-4">Tickets by Priority</h3>
-        <div className="h-64 flex items-center justify-center">
-          <p className="text-sm text-text-muted">No data for this period. Try clearing the date filter.</p>
-        </div>
-      </div>
-    );
-  }
+  const rows: PriorityDatum[] = useMemo(() => {
+    const order = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'];
+    return [...data]
+      .map((d) => ({
+        priority: typeof d['priority'] === 'string' ? (d['priority'] as string) : String(d['priority'] ?? ''),
+        count: toCount(d['count']),
+      }))
+      .sort((a, b) => order.indexOf(a.priority) - order.indexOf(b.priority));
+  }, [data]);
 
-  const priorityOrder = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'];
-  const sortedData = [...data].sort((a, b) => priorityOrder.indexOf(a['priority'] as string) - priorityOrder.indexOf(b['priority'] as string));
+  if (loading) return <ChartLoading title="Tickets by Priority" />;
+  if (!rows.length) return <ChartEmpty title="Tickets by Priority" />;
 
   return (
-    <div className="card p-6">
-      <h3 className="font-semibold text-navy dark:text-white mb-4">Tickets by Priority</h3>
+    <ChartShell title="Tickets by Priority">
       <div className="h-64">
-        <ResponsiveContainerWrapper width="100%" height="100%">
-            <PieChartWrapper>
-              <Pie
-                data={sortedData}
-                cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={100}
-                fill="#8884d8"
-                dataKey="count"
-                nameKey="priority"
-                label={({ priority, count, percent }) => `${priority}: ${count} (${(percent * 100).toFixed(1)}%)`}
-                labelLine={false}
-              >
-                {sortedData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip
-                contentStyle={{ backgroundColor: tooltipBg, border: `1px solid ${tooltipBorder}`, borderRadius: '8px', color: tick }}
-                formatter={(value: number) => [value, 'Tickets']}
-              />
-            </PieChartWrapper>
-          </ResponsiveContainerWrapper>
+        <ResponsiveContainer width="100%" height={CHART_HEIGHT}>
+          <PieChart>
+            <Pie
+              data={rows}
+              cx="50%"
+              cy="50%"
+              innerRadius={60}
+              outerRadius={100}
+              dataKey="count"
+              nameKey="priority"
+              isAnimationActive={!reduceMotion}
+            >
+              {rows.map((entry, index) => (
+                <Cell key={`cell-${entry.priority}-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip
+              contentStyle={tooltipStyle(tooltipBg, tooltipBorder, tick)}
+              formatter={(value) => [toCount(value), 'Tickets']}
+            />
+          </PieChart>
+        </ResponsiveContainer>
       </div>
-    </div>
+    </ChartShell>
   );
 }
 
 export function TicketsOverTimeChart({ data, loading }: ChartProps) {
   const { grid, tick, tooltipBg, tooltipBorder, navy } = useChartTheme();
-  if (loading) {
-    return (
-      <div className="card p-6">
-        <h3 className="font-semibold text-navy dark:text-white mb-4">Tickets Over Time</h3>
-        <div className="h-64 flex items-center justify-center">
-          <div className="animate-pulse bg-border rounded-xl w-full h-full" />
-        </div>
-      </div>
-    );
-  }
+  const reduceMotion = useReducedMotion();
 
-  if (!data.length) {
-    return (
-      <div className="card p-6">
-        <h3 className="font-semibold text-navy dark:text-white mb-4">Tickets Over Time</h3>
-        <div className="h-64 flex items-center justify-center">
-          <p className="text-sm text-text-muted">No data for this period. Try clearing the date filter.</p>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="card p-6">
-      <h3 className="font-semibold text-navy dark:text-white mb-4">Tickets Over Time</h3>
-      <div className="h-64">
-        <ResponsiveContainerWrapper width="100%" height="100%">
-            <LineChartWrapper data={data}>
-              <CartesianGrid strokeDasharray="3 3" stroke={grid} />
-              <XAxis dataKey="date" tick={{ fontSize: 12, fill: tick }} />
-              <YAxis tick={{ fontSize: 12, fill: tick }} />
-              <Tooltip
-                contentStyle={{ backgroundColor: tooltipBg, border: `1px solid ${tooltipBorder}`, borderRadius: '8px', color: tick }}
-                formatter={(value: number) => [value, 'Tickets']}
-              />
-              <Line
-                type="monotone"
-                dataKey="count"
-                stroke={navy}
-                strokeWidth={2}
-                dot={{ fill: navy, strokeWidth: 2, r: 4 }}
-                activeDot={{ r: 6 }}
-              />
-            </LineChartWrapper>
-          </ResponsiveContainerWrapper>
-      </div>
-    </div>
+  const rows: OverTimeDatum[] = useMemo(
+    () =>
+      data.map((d) => ({
+        date: typeof d['date'] === 'string' ? (d['date'] as string) : String(d['date'] ?? ''),
+        count: toCount(d['count']),
+      })),
+    [data]
   );
-}
 
-export function TechnicianPerformanceChart({ data, loading }: ChartProps) {
-  const { grid, tick, tooltipBg, tooltipBorder } = useChartTheme();
-  if (loading) {
-    return (
-      <div className="card p-6">
-        <h3 className="font-semibold text-navy dark:text-white mb-4">Technician Performance</h3>
-        <div className="h-64 flex items-center justify-center">
-          <div className="animate-pulse bg-border rounded-xl w-full h-full" />
-        </div>
-      </div>
-    );
-  }
-
-  if (!data.length) {
-    return (
-      <div className="card p-6">
-        <h3 className="font-semibold text-navy dark:text-white mb-4">Technician Performance</h3>
-        <div className="h-64 flex items-center justify-center">
-          <p className="text-sm text-text-muted">No technician data for this period.</p>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <ChartLoading title="Tickets Over Time" />;
+  if (!rows.length) return <ChartEmpty title="Tickets Over Time" />;
 
   return (
-    <div className="card p-6">
-      <h3 className="font-semibold text-navy dark:text-white mb-4">Technician Performance</h3>
+    <ChartShell title="Tickets Over Time">
       <div className="h-64">
-        <ResponsiveContainerWrapper width="100%" height="100%">
-            <BarChartWrapper data={data} layout="vertical">
-              <CartesianGrid strokeDasharray="3 3" stroke={grid} />
-              <XAxis type="number" tick={{ fontSize: 12, fill: tick }} />
-              <YAxis type="category" dataKey="name" tick={{ fontSize: 12, fill: tick }} width={120} />
-              <Tooltip
-                contentStyle={{ backgroundColor: tooltipBg, border: `1px solid ${tooltipBorder}`, borderRadius: '8px', color: tick }}
-                formatter={(value: number, name: string) => [value, name === 'assigned' ? 'Assigned' : 'Resolved']}
-              />
-              <Bar dataKey="assigned" fill="#CBAE2D" radius={[0, 4, 4, 0]} maxBarSize={30} name="Assigned" />
-              <Bar dataKey="resolved" fill="#00d084" radius={[0, 4, 4, 0]} maxBarSize={30} name="Resolved" />
-            </BarChartWrapper>
-          </ResponsiveContainerWrapper>
+        <ResponsiveContainer width="100%" height={CHART_HEIGHT}>
+          <LineChart data={rows}>
+            <CartesianGrid strokeDasharray="3 3" stroke={grid} />
+            <XAxis dataKey="date" tick={{ fontSize: 12, fill: tick }} />
+            <YAxis tick={{ fontSize: 12, fill: tick }} allowDecimals={false} />
+            <Tooltip
+              contentStyle={tooltipStyle(tooltipBg, tooltipBorder, tick)}
+              formatter={(value) => [toCount(value), 'Tickets']}
+            />
+            <Line
+              type="monotone"
+              dataKey="count"
+              stroke={navy}
+              strokeWidth={2}
+              dot={{ fill: navy, strokeWidth: 2, r: 4 }}
+              activeDot={{ r: 6 }}
+              isAnimationActive={!reduceMotion}
+            />
+          </LineChart>
+        </ResponsiveContainer>
       </div>
-    </div>
+    </ChartShell>
   );
 }
 
@@ -253,5 +237,4 @@ export const Charts = {
   TicketsByCategoryChart,
   TicketsByPriorityChart,
   TicketsOverTimeChart,
-  TechnicianPerformanceChart,
 };
