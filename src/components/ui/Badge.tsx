@@ -26,18 +26,18 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
     };
 
     const statusClasses = {
-      open: 'bg-navy/10 text-navy',
-      assigned: 'bg-gold/15 text-gold',
-      in_progress: 'bg-blue/10 text-blue-600 dark:text-blue-400',
+      open: 'bg-navy/10 text-navy dark:bg-navy-light/10 dark:text-navy-light',
+      assigned: 'bg-gold/15 text-gold dark:bg-gold/20 dark:text-gold',
+      in_progress: 'bg-sky-500/10 text-blue-600 dark:text-blue-400',
       resolved: 'bg-success/10 text-success',
-      closed: 'bg-gray/10 text-gray-600 dark:text-gray-400',
-      reopened: 'bg-orange/10 text-orange-600 dark:text-orange-400',
+      closed: 'bg-slate-500/10 text-gray-600 dark:text-gray-400',
+      reopened: 'bg-orange-500/10 text-orange-600 dark:text-orange-400',
     };
 
     const priorityClasses = {
-      low: 'bg-gray/10 text-gray-600 dark:text-gray-400',
-      medium: 'bg-blue/10 text-blue-600 dark:text-blue-400',
-      high: 'bg-orange/10 text-orange-600 dark:text-orange-400',
+      low: 'bg-slate-500/10 text-gray-600 dark:text-gray-400',
+      medium: 'bg-sky-500/10 text-blue-600 dark:text-blue-400',
+      high: 'bg-orange-500/10 text-orange-600 dark:text-orange-400',
       critical: 'bg-error/10 text-error',
     };
 

@@ -11,12 +11,12 @@ module.exports = {
       colors: {
         navy: {
           DEFAULT: 'oklch(var(--color-navy) / <alpha-value>)',
-          hover: 'oklch(24% 0.15 260 / <alpha-value>)',
-          light: 'oklch(92% 0.03 260 / <alpha-value>)',
+          hover: 'oklch(var(--color-navy-hover) / <alpha-value>)',
+          light: 'oklch(var(--color-navy-light) / <alpha-value>)',
         },
         gold: {
           DEFAULT: 'oklch(var(--color-gold) / <alpha-value>)',
-          hover: 'oklch(64% 0.18 85 / <alpha-value>)',
+          hover: 'oklch(var(--color-gold-hover) / <alpha-value>)',
           light: 'oklch(95% 0.12 85 / <alpha-value>)',
         },
         surface: {

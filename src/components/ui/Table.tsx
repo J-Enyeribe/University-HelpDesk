@@ -102,7 +102,7 @@ export function Table<T>({
               key={keyExtractor(row)}
               className={cn(
                 'transition-colors duration-fast',
-                striped && index % 2 === 1 && 'bg-surface-muted/50',
+                striped && index % 2 === 1 && 'bg-surface-muted',
                 hoverable && 'hover:bg-surface-muted',
                 onRowClick && 'cursor-pointer'
               )}

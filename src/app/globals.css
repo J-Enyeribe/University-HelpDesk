@@ -8,7 +8,10 @@
     --font-lato: 'Lato', system-ui, sans-serif;
     --font-jetbrains-mono: 'JetBrains Mono', monospace;
     --color-navy: 28% 0.15 260;
+    --color-navy-hover: 24% 0.15 260;
+    --color-navy-light: 92% 0.03 260;
     --color-gold: 68% 0.18 85;
+    --color-gold-hover: 64% 0.18 85;
     --color-surface: 100% 0 0;
     --color-surface-muted: 97% 0.005 260;
     --color-text: 25% 0.02 260;
@@ -17,8 +20,11 @@
   }
 
   .dark {
-    --color-navy: 92% 0.03 260;
+    --color-navy: 28% 0.15 260;
+    --color-navy-hover: 24% 0.15 260;
+    --color-navy-light: 92% 0.03 260;
     --color-gold: 70% 0.15 85;
+    --color-gold-hover: 64% 0.18 85;
     --color-surface: 18% 0.02 260;
     --color-surface-muted: 22% 0.02 260;
     --color-text: 92% 0.01 260;
@@ -41,8 +47,12 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display font-semibold text-navy dark:text-white;
+    @apply font-display font-semibold text-navy;
     font-family: var(--font-poppins);
+  }
+
+  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+    @apply text-white;
   }
 
   code, pre, kbd, samp {
@@ -56,6 +66,10 @@
 
   :focus-visible {
     @apply outline-none ring-2 ring-focus ring-offset-2 ring-offset-surface;
+  }
+
+  .dark :focus-visible {
+    @apply ring-offset-surface;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -77,6 +91,10 @@
 
   .btn-primary {
     @apply btn bg-navy text-white hover:bg-navy-hover focus-visible:ring-navy;
+  }
+
+  .dark .btn-primary {
+    @apply bg-navy text-white hover:bg-navy-hover focus-visible:ring-navy-light;
   }
 
   .btn-secondary {
@@ -119,6 +137,10 @@
     @apply bg-surface border border-border rounded-xl shadow-sm;
   }
 
+  .dark .card {
+    @apply shadow-lg shadow-black/20;
+  }
+
   .card-hover {
     @apply card transition-shadow duration-fast hover:shadow-md;
   }
@@ -131,8 +153,16 @@
     @apply badge bg-navy/10 text-navy;
   }
 
+  .dark .badge-navy {
+    @apply bg-navy-light/10 text-navy-light;
+  }
+
   .badge-gold {
     @apply badge bg-gold/15 text-gold;
+  }
+
+  .dark .badge-gold {
+    @apply bg-gold/15 text-gold;
   }
 
   .badge-green {
@@ -159,8 +189,16 @@
     @apply status-badge bg-navy/10 text-navy;
   }
 
+  .dark .status-open {
+    @apply bg-navy-light/10 text-navy-light;
+  }
+
   .status-assigned {
     @apply status-badge bg-gold/15 text-gold;
+  }
+
+  .dark .status-assigned {
+    @apply bg-gold/20 text-gold;
   }
 
   .status-in-progress {
@@ -216,7 +254,15 @@
   }
 
   .table tbody tr {
-    @apply transition-colors duration-fast hover:bg-surface-muted;
+    @apply transition-colors duration-fast;
+  }
+
+  .table tbody tr:hover {
+    @apply bg-surface-muted;
+  }
+
+  .dark .table tbody tr:hover {
+    @apply bg-surface-muted;
   }
 
   .table tbody tr:last-child td {
@@ -229,6 +275,10 @@
 
   .sidebar-link-active {
     @apply bg-navy/10 text-navy;
+  }
+
+  .dark .sidebar-link-active {
+    @apply bg-navy-light/10 text-navy-light;
   }
 
   .toast {
@@ -256,7 +306,7 @@
   }
 
   .empty-state-icon {
-    @apply text-6xl text-border;
+    @apply text-6xl text-text-muted;
   }
 
   .empty-state-title {

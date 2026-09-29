@@ -69,7 +69,6 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             </ToastPrimitive.Close>
           </ToastPrimitive.Root>
         ))}
-        <ToastPrimitive.Viewport className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 w-[380px] sm:w-[420px] outline-none" />
       </ToastContext.Provider>
     </ToastPrimitive.Provider>
   );
@@ -84,39 +83,7 @@ export function useToast() {
 }
 
 export function Toaster() {
-  const { toasts } = useToast();
   return (
-    <>
-      {toasts.map((toast) => (
-        <ToastPrimitive.Root
-          key={toast.id}
-          duration={toast.duration ?? 4000}
-          className={cn(
-            'flex items-start gap-3 rounded-lg border bg-surface p-4 shadow-lg',
-            'animate-slide-up',
-            toast.variant === 'success' && 'border-success/30',
-            toast.variant === 'error' && 'border-error/30',
-            toast.variant === 'warning' && 'border-warning/30',
-            toast.variant === 'default' && 'border-border'
-          )}
-        >
-          <div className="flex-1">
-            <ToastPrimitive.Title className="text-sm font-semibold text-text">{toast.title}</ToastPrimitive.Title>
-            {toast.description && (
-              <ToastPrimitive.Description className="mt-1 text-sm text-text-muted">{toast.description}</ToastPrimitive.Description>
-            )}
-          </div>
-          {toast.action && (
-            <ToastPrimitive.Action altText="Toast action" asChild>
-              {toast.action}
-            </ToastPrimitive.Action>
-          )}
-          <ToastPrimitive.Close className="flex-shrink-0 p-1 rounded text-text-muted hover:text-text transition-colors">
-            <XMarkIcon className="h-4 w-4" />
-          </ToastPrimitive.Close>
-        </ToastPrimitive.Root>
-      ))}
-      <ToastPrimitive.Viewport className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 w-[380px] sm:w-[420px] outline-none" />
-    </>
+    <ToastPrimitive.Viewport className="fixed top-20 right-4 z-50 flex flex-col gap-2 w-[calc(100vw-2rem)] max-w-[420px] outline-none" />
   );
 }

@@ -50,7 +50,7 @@ export function Modal({ isOpen, onClose, title, description, children, size = 'm
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className={cn('w-full transform overflow-hidden rounded-2xl bg-surface shadow-xl transition-all', sizeClasses[size])}>
+              <Dialog.Panel className={cn('w-full transform overflow-hidden rounded-2xl bg-surface shadow-xl transition-all dark:shadow-2xl dark:shadow-black/40', sizeClasses[size])}>
                  <div className="flex items-start justify-between p-4 border-b border-border">
                   <div>
                     <Dialog.Title className="text-lg font-semibold text-navy">{title}</Dialog.Title>
