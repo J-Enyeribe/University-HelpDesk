@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import { authConfig } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import { canPerformAction } from '@/lib/permissions';
 
 export async function GET(request: NextRequest) {
   try {
@@ -16,8 +14,10 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const dateFromStr = searchParams.get('dateFrom');
     const dateToStr = searchParams.get('dateTo');
-    const dateFrom = dateFromStr ? new Date(dateFromStr) : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-    const dateTo = dateToStr ? new Date(dateToStr) : new Date();
+    const parsedFrom = dateFromStr ? new Date(dateFromStr) : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    const parsedTo = dateToStr ? new Date(dateToStr) : new Date();
+    const dateFrom = Number.isNaN(parsedFrom.getTime()) ? new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) : parsedFrom;
+    const dateTo = Number.isNaN(parsedTo.getTime()) ? new Date() : parsedTo;
 
     dateTo.setHours(23, 59, 59, 999);
 

@@ -102,7 +102,7 @@ export function StatsCards({ stats, loading }: StatsCardsProps) {
         label="Avg Resolution"
         value={`${s.avgResolutionTimeHours.toFixed(1)}h`}
         icon={<svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
-        color="bg-blue/10 text-blue-600"
+        color="bg-navy/10 text-navy dark:bg-navy-light/10 dark:text-navy-light"
         loading={loading}
       />
     </div>

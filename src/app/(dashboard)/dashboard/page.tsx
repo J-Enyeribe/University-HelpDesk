@@ -62,7 +62,7 @@ function DashboardInner() {
     return p.toString();
   }, [dateRange]);
 
-  const { data: stats, isLoading: statsLoading, error: statsError } = useSWR(
+  const { data: stats, isLoading: statsLoading, error: statsError, mutate: mutateStats } = useSWR(
     status === 'authenticated' ? `/api/reports/stats?${statsParams}` : null,
     fetcher,
     { revalidateOnFocus: true, dedupingInterval: 10000 }
@@ -96,7 +96,7 @@ function DashboardInner() {
     }
   };
 
-  if (status === 'loading' || (loading && !stats)) {
+  if (status === 'loading' || (statsLoading && !stats)) {
     return (
       <div className="space-y-6 animate-pulse">
         <StatsCards loading />
@@ -122,7 +122,12 @@ function DashboardInner() {
         <div>
           <h1 className="text-3xl font-display font-bold text-navy">Dashboard</h1>
           <p className="text-text-muted mt-1">Welcome back, {user?.name}. Here&apos;s an overview of your helpdesk.</p>
-          {statsError && <p className="text-sm text-error mt-2">Failed to load stats. <button onClick={() => window.location.reload()} className="underline">Retry</button></p>}
+          {statsError && (
+            <p className="text-sm text-error mt-2">
+              Failed to load stats ({(statsError as Error)?.message ?? 'network error'}).{' '}
+              <button onClick={() => mutateStats()} className="underline">Retry</button>
+            </p>
+          )}
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2 bg-surface border border-border rounded-lg px-3 py-2">
@@ -140,8 +145,8 @@ function DashboardInner() {
         </div>
       </div>
 
-      {/* Stats Cards */}
-      {stats && <StatsCards stats={stats} />}
+      {/* Stats Cards — always render so directors never see a blank card area */}
+      <StatsCards stats={stats} loading={statsLoading && !stats} />
 
       {/* Asymmetric Charts: 2/3 + 1/3 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

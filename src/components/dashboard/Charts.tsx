@@ -47,12 +47,23 @@ interface ChartProps {
 
 export function TicketsByCategoryChart({ data, loading }: ChartProps) {
   const { grid, tick, tooltipBg, tooltipBorder, navy } = useChartTheme();
-  if (loading || !data.length) {
+  if (loading) {
     return (
       <div className="card p-6">
         <h3 className="font-semibold text-navy dark:text-white mb-4">Tickets by Category</h3>
         <div className="h-64 flex items-center justify-center">
           <div className="animate-pulse bg-border rounded-xl w-full h-full" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!data.length) {
+    return (
+      <div className="card p-6">
+        <h3 className="font-semibold text-navy dark:text-white mb-4">Tickets by Category</h3>
+        <div className="h-64 flex items-center justify-center">
+          <p className="text-sm text-text-muted">No data for this period. Try clearing the date filter.</p>
         </div>
       </div>
     );
@@ -81,12 +92,23 @@ export function TicketsByCategoryChart({ data, loading }: ChartProps) {
 
 export function TicketsByPriorityChart({ data, loading }: ChartProps) {
   const { tick, tooltipBg, tooltipBorder } = useChartTheme();
-  if (loading || !data.length) {
+  if (loading) {
     return (
       <div className="card p-6">
         <h3 className="font-semibold text-navy dark:text-white mb-4">Tickets by Priority</h3>
         <div className="h-64 flex items-center justify-center">
           <div className="animate-pulse bg-border rounded-xl w-full h-full" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!data.length) {
+    return (
+      <div className="card p-6">
+        <h3 className="font-semibold text-navy dark:text-white mb-4">Tickets by Priority</h3>
+        <div className="h-64 flex items-center justify-center">
+          <p className="text-sm text-text-muted">No data for this period. Try clearing the date filter.</p>
         </div>
       </div>
     );
@@ -130,12 +152,23 @@ export function TicketsByPriorityChart({ data, loading }: ChartProps) {
 
 export function TicketsOverTimeChart({ data, loading }: ChartProps) {
   const { grid, tick, tooltipBg, tooltipBorder, navy } = useChartTheme();
-  if (loading || !data.length) {
+  if (loading) {
     return (
       <div className="card p-6">
         <h3 className="font-semibold text-navy dark:text-white mb-4">Tickets Over Time</h3>
         <div className="h-64 flex items-center justify-center">
           <div className="animate-pulse bg-border rounded-xl w-full h-full" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!data.length) {
+    return (
+      <div className="card p-6">
+        <h3 className="font-semibold text-navy dark:text-white mb-4">Tickets Over Time</h3>
+        <div className="h-64 flex items-center justify-center">
+          <p className="text-sm text-text-muted">No data for this period. Try clearing the date filter.</p>
         </div>
       </div>
     );
@@ -171,12 +204,23 @@ export function TicketsOverTimeChart({ data, loading }: ChartProps) {
 
 export function TechnicianPerformanceChart({ data, loading }: ChartProps) {
   const { grid, tick, tooltipBg, tooltipBorder } = useChartTheme();
-  if (loading || !data.length) {
+  if (loading) {
     return (
       <div className="card p-6">
         <h3 className="font-semibold text-navy dark:text-white mb-4">Technician Performance</h3>
         <div className="h-64 flex items-center justify-center">
           <div className="animate-pulse bg-border rounded-xl w-full h-full" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!data.length) {
+    return (
+      <div className="card p-6">
+        <h3 className="font-semibold text-navy dark:text-white mb-4">Technician Performance</h3>
+        <div className="h-64 flex items-center justify-center">
+          <p className="text-sm text-text-muted">No technician data for this period.</p>
         </div>
       </div>
     );
